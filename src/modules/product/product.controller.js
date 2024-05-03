@@ -21,7 +21,7 @@ const addProduct = catchError( async (req, res, next)=>{
 //! ============================== getAllProducts ===========================//
 const getAllProducts = catchError(async (req, res, next) => {
 
-    let apiFeatures = new ApiFeatures(productModel.find(), req.query).filter().sort().fields().pagination().search();
+    let apiFeatures = new ApiFeatures(productModel.find(), req.query).filter().sort().fields().search();
     let products = await  apiFeatures.mongooseQuery
 
     res.json({ message:"success" , page:apiFeatures.pageNumber,  products})

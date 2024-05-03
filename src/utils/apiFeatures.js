@@ -9,7 +9,7 @@ export class ApiFeatures{
     pagination(){
         if( this.searchQuery.page <= 0 )  this.searchQuery.page = 1
         let pageNumber =  this.searchQuery.page * 1 || 1
-        let pageLimit = 2 
+        let pageLimit = 100 
         let skip = ( pageNumber -1 ) * pageLimit 
         this.pageNumber = pageNumber
         this.mongooseQuery.skip(skip).limit(pageLimit)
