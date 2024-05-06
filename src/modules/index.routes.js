@@ -28,6 +28,6 @@ export const bootstrap =(app)=>{
     app.use('/api/v1/carts', cartRouter)
     app.use('/api/v1/orders', orderRouter)
 
-    app.get('/', (req, res) => res.send('Hello World!'))
+    app.get('/', (req, res) => res.send('Welcome to our fashion design store!'))
     app.use(globalError)
 }
