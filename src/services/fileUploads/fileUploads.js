@@ -27,6 +27,6 @@ function fileFilter(req, file ,cb){
 }
 
 export const uploadSingleFile = fieldName => fileUpload().single(fieldName)
-export const uploadArrayOfFiles = fieldName => fileUpload().array(fieldName ,10)
+export const uploadArrayOfFiles = fieldName => fileUpload().array(fieldName , 10)
 export const uploadFields = fields => fileUpload().fields(fields)
 

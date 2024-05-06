@@ -10,7 +10,7 @@ const productRouter = express.Router()
 
 productRouter.route('/')
       .post( protectedRoutes, allowedTo('admin'),uploadFields([
-            { name: "imgCover",maxCount:1 },
+            { name: "imgCover", maxCount:1 },
             { name:"images", maxCount:10} 
       ]),validation(addProductVal), addProduct)
       .get(getAllProducts)
