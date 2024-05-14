@@ -6,7 +6,7 @@ import { catchError } from '../../middleware/catchError.js'
 import { AppError } from '../../utils/appError.js'
 
 
-//! ============================== addToCart ===========================//
+//! ============================== calcTotalPrice ===========================//
 const calcTotalPrice = (cart) => {
    let totalPrice = 0
        cart.cartItems.forEach((item) => {
@@ -19,7 +19,7 @@ const calcTotalPrice = (cart) => {
          cart.totalPriceAfterDiscount = totalPriceAfterDiscount
        }
 }
-
+// ! =================================  addToCart ============================//
 const addToCart = catchError(async (req, res, next)=>{
 
      let product = await productModel.findById(req.body.product)
@@ -28,7 +28,7 @@ const addToCart = catchError(async (req, res, next)=>{
      if(req.body.quantity > product.quantity )return next(new AppError('sold out'))
          req.body.price = product.price
  
-     let isCartExist = await cartModel.findOne({ user: req.user._id })
+     let isCartExist = await cartModel.findOne({ user: req.user._id }).populate('cartItems.product')
      if(!isCartExist){
        let cart = new cartModel({
           user: req.user._id ,
@@ -57,11 +57,11 @@ const addToCart = catchError(async (req, res, next)=>{
  
 })
  
-//! ====================== removeItemFromCar ====================================//
+//! ====================== removeItemFromCart ====================================//
 const removeItemFromCart = catchError(async (req, res, next)=>{
     
     let cart = await cartModel.
-         findOneAndUpdate( {user: req.user._id }, { $pull: {cartItems: {_id:req.params.id} } }, { new:true })
+         findOneAndUpdate( {user: req.user._id }, { $pull: {cartItems: {_id:req.params.id} } }, { new:true }).populate('cartItems.product')
      
          calcTotalPrice(cart)
          await cart.save()
@@ -95,7 +95,7 @@ const getLoggedUserCart = catchError(async (req, res, next)=>{
 //! ====================== clearUserCart ====================================//
 const clearUserCart = catchError(async (req, res, next)=>{
     
-   let  cart = await cartModel.findOneAndDelete({user:req.user._id})
+   let  cart = await cartModel.findOneAndDelete({user:req.user._id}).populate('cartItems.product')
    !cart && res.status(404).json({message:"Cart not found"})
     cart  && res.json({ message:"success" , cart }) 
 })
@@ -105,7 +105,7 @@ const applyCoupon = catchError(async (req, res, next)=>{
     let coupon  = await couponModel.findOne({code: req.body.coupon, expires:{$gte : Date.now() } } )
     if(!coupon) return next(new AppError('Invalid Coupon Code',401))
 
-    let cart = await cartModel.findOne({ user:req.user._id })
+    let cart = await cartModel.findOne({ user:req.user._id }).populate('cartItems.product')
     if(!cart) return next(new AppError('Cart not found',400))
 
     let totalPriceAfterDiscount = cart.totalPrice - (cart.totalPrice * coupon.discount) / 100

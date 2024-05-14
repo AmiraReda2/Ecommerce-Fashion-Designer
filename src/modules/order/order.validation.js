@@ -4,11 +4,11 @@ import Joi from "joi"
 
 const createCashVal = Joi.object({
     id: Joi.string().hex().length(24),
-     shippingAddress:Joi.object({
-     street:Joi.string().trim().required(true),
-     city:Joi.string().trim().required(),
-     phone:Joi.string().trim().required()
-   })
+    shippingAddress:Joi.object({
+        street:Joi.string().trim().required(),
+        city:Joi.string().trim().required(),
+        phone:Joi.string().trim().required()
+   }).required()
 
 })
 
@@ -28,5 +28,6 @@ const updateCarttVal = Joi.object({
 export {
     createCashVal,
     paramsIdVal,
+    updateCarttVal
     
 }

@@ -3,8 +3,6 @@ import { userModel } from '../../../database/models/user.model.js';
 import { catchError } from '../../middleware/catchError.js'
 
 
-
-
 //! ============================== addToWhislist ===========================//
 const addToWhislist = catchError(async (req, res, next)=>{
     

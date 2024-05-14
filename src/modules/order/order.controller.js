@@ -10,18 +10,18 @@ const stripe = new Stripe('sk_test_51PBZng2NWYimMti9iMTzq4J9L7FGp8jVBNw9qYcCMFuB
 
 
 //! ===================== createOderCash ====================== //
-const createOderCash = catchError(async (req, res, next)=>{
+const createOrderCash = catchError(async (req, res, next)=>{
 // 1- get cart -> cartId
 const cart = await cartModel.findById(req.params.id)
 
 // 2- total order price
-const totalOrderPrice = cart.totalPriceAfterDiscount ? 
+let totalOrderPrice = cart.totalPriceAfterDiscount ? 
         cart.totalPriceAfterDiscount : cart.totalPrice
 
 // 3- create order -> cash
-const order = new orderModel({
+let order = new orderModel({
    user:req.user._id,
-   cartItems: cart.cartItems,
+   orderItems: cart.cartItems,
    totalOrderPrice,
    shippingAddress: req.body.shippingAddress,
 }) 
@@ -47,7 +47,8 @@ let options = cart.cartItems.map(item =>({
    return next(new AppError('erroe in cart id ',404))
 }})
 
-//! ==================== getSpecificOrders =====================//
+
+//! ===================== getSpecificOrder ====================== //
 const getSpecificOrder = catchError(async (req, res, next)=>{
  
    let order = await orderModel.findOne({user: req.user._id}).populate('orderItems.product')
@@ -93,8 +94,8 @@ const getAllOrders = catchError(async (req, res, next)=>{
             }
          ],
          mode:"payment",
-         success_url:"https://route-comm.netlify.app/#/",
-         cancel_url:"https://route-comm.netlify.app/#/cart",
+         success_url:"https://ecommerce-fashion-designer-1.onrender.com/api/v1/products",
+         cancel_url:"https://ecommerce-fashion-designer-1.onrender.com/api/v1/carts",
          customer_email:req.user.email,
          client_reference_id:req.params.id,
          metadata:req.body.shippingAddress
@@ -131,7 +132,7 @@ const getAllOrders = catchError(async (req, res, next)=>{
 
 
 export {
-   createOderCash,
+   createOrderCash,
    getSpecificOrder,
    getAllOrders,
    createCheckOutSession,
